@@ -23,6 +23,9 @@
 // Support for communicating with the host via a simple Serial protocol
 #include "Kaleidoscope-FocusSerial.h"
 
+// Support for quantum keys (dual use)
+#include "Kaleidoscope-Qukeys.h"
+
 // Support for keys that move the mouse
 #include "Kaleidoscope-MouseKeys.h"
 
@@ -178,10 +181,10 @@ KEYMAPS(
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
-   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   M(MACRO_ANY), Key_6, Key_7,    Key_8,       Key_9,      Key_0,            LockLayer(NUMPAD),
+   Key_Enter,    Key_Y, Key_U,    Key_I,       Key_O,      Key_P,            Key_Equals,
+                 Key_H, SFT_T(J), CTL_T(K),    ALT_T(L),   GUI_T(Semicolon), Key_Quote,
+   Key_RightAlt, Key_N, LT(2,M),  LT(1,Comma), Key_Period, Key_Slash,        Key_Minus,
    Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
@@ -260,7 +263,7 @@ KEYMAPS(
    ___),
 
   [FUNCTION] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_CapsLock,
+  (Key_Spacebar,  Key_F1,      Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_CapsLock,
    Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
    Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
    Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
@@ -399,6 +402,9 @@ USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
 // The order can be important. For example, LED effects are
 // added in the order they're listed here.
 KALEIDOSCOPE_INIT_PLUGINS(
+  // Quantum keys should come first
+  Qukeys,
+
   // The EEPROMSettings & EEPROMKeymap plugins make it possible to have an
   // editable keymap in EEPROM.
   EEPROMSettings,
@@ -526,10 +532,33 @@ void setup() {
   // maps for. To make things simple, we set it to five layers, which is how
   // many editable layers we have (see above).
   ColormapEffect.max_layers(5);
+
+  // Define Qukeys
+  QUKEYS(
+      // left-side modifiers
+      kaleidoscope::plugin::Qukey(0, 2, 1, Key_LeftGui),      // A
+      kaleidoscope::plugin::Qukey(0, 2, 2, Key_LeftAlt),      // S
+      kaleidoscope::plugin::Qukey(0, 2, 3, Key_LeftControl),  // D
+      kaleidoscope::plugin::Qukey(0, 2, 4, Key_LeftShift),    // F
+      // left-side layer shifts
+      kaleidoscope::plugin::Qukey(0, 3, 3, ShiftToLayer(NUMPAD)),    // C
+      kaleidoscope::plugin::Qukey(0, 3, 4, ShiftToLayer(FUNCTION)),  // V
+      // prog key
+      kaleidoscope::plugin::Qukey(1, 0, 0, XXX),  // prog (FUNCTION layer)
+      // left-side long-press caps
+      kaleidoscope::plugin::Qukey(0, 1, 1, LSHIFT(Key_Q)),  // Q
+      kaleidoscope::plugin::Qukey(0, 1, 2, LSHIFT(Key_W)),  // W
+      kaleidoscope::plugin::Qukey(0, 1, 3, LSHIFT(Key_E)),  // E
+      kaleidoscope::plugin::Qukey(0, 1, 4, LSHIFT(Key_R)),  // R
+  );
+
+  // Set qukeys configuration variables for debugging
+  Qukeys.setTimeout(500);
+  Qukeys.setReleaseDelay(100);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
-  * As you might expect, it runs in a loop, never exiting.
+  * As you might expect, it runs in a loop, never exitineg.
   *
   * For Kaleidoscope-based keyboard firmware, you usually just want to
   * call Kaleidoscope.loop(); and not do anything custom here.
