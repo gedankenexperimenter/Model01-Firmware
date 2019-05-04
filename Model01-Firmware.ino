@@ -536,25 +536,28 @@ void setup() {
   // Define Qukeys
   QUKEYS(
       // left-side modifiers
-      kaleidoscope::plugin::Qukey(0, 2, 1, Key_LeftGui),      // A
-      kaleidoscope::plugin::Qukey(0, 2, 2, Key_LeftAlt),      // S
-      kaleidoscope::plugin::Qukey(0, 2, 3, Key_LeftControl),  // D
-      kaleidoscope::plugin::Qukey(0, 2, 4, Key_LeftShift),    // F
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 1), Key_LeftGui),      // A
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 2), Key_LeftAlt),      // S
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 3), Key_LeftControl),  // D
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 4), Key_LeftShift),    // F
       // left-side layer shifts
-      kaleidoscope::plugin::Qukey(0, 3, 3, ShiftToLayer(NUMPAD)),    // C
-      kaleidoscope::plugin::Qukey(0, 3, 4, ShiftToLayer(FUNCTION)),  // V
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 3), ShiftToLayer(NUMPAD)),    // C
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 4), ShiftToLayer(FUNCTION)),  // V
       // prog key
-      kaleidoscope::plugin::Qukey(1, 0, 0, XXX),  // prog (FUNCTION layer)
+      kaleidoscope::plugin::Qukey(1, KeyAddr(0, 0), XXX),  // prog (FUNCTION layer)
       // left-side long-press caps
-      kaleidoscope::plugin::Qukey(0, 1, 1, LSHIFT(Key_Q)),  // Q
-      kaleidoscope::plugin::Qukey(0, 1, 2, LSHIFT(Key_W)),  // W
-      kaleidoscope::plugin::Qukey(0, 1, 3, LSHIFT(Key_E)),  // E
-      kaleidoscope::plugin::Qukey(0, 1, 4, LSHIFT(Key_R)),  // R
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 1), LSHIFT(Key_Q)),  // Q
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 2), LSHIFT(Key_W)),  // W
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 3), LSHIFT(Key_E)),  // E
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 4), LSHIFT(Key_R)),  // R
+      // SpaceCadet
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 7), Key_LeftParen),
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 8), Key_RightParen),
   );
 
   // Set qukeys configuration variables for debugging
-  Qukeys.setTimeout(500);
-  Qukeys.setReleaseDelay(100);
+  Qukeys.setHoldTimeout(12000);
+  Qukeys.setOverlapThreshold(50);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
