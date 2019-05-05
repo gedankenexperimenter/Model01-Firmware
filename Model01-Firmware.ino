@@ -556,8 +556,8 @@ void setup() {
   );
 
   // Set qukeys configuration variables for debugging
-  Qukeys.setTimeout(500);
-  Qukeys.setReleaseDelay(100);
+  Qukeys.setHoldTimeout(12000);
+  Qukeys.setOverlapThreshold(50);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
