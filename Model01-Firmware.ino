@@ -307,6 +307,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
 
 static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
+static kaleidoscope::plugin::LEDSolidColor solidBlue(160, 0, 0);
 
 // First, tell Kaleidoscope which plugins you want to use.
 // The order can be important. For example, LED effects are
@@ -327,7 +328,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   LEDRainbowWaveEffect,
 
   // These static effects turn your keyboard's LEDs a variety of colors
-  solidGreen,
+  solidGreen, solidBlue,
 
   // The breathe effect slowly pulses all of the LEDs on your keyboard
   LEDBreatheEffect,
