@@ -550,6 +550,7 @@ void setup() {
   OneShot.setTimeout(3000);
   OneShot.setHoldTimeout(1000);
   OneShot.setDoubleTapTimeout(500);
+  OneShot.enableAutoModifiers();
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
