@@ -94,9 +94,11 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO,
-       MACRO_ANY
-     };
+enum {
+  MACRO_VERSION_INFO,
+  MACRO_ANY,
+  MACRO_TOGGLE_ONESHOT,
+};
 
 
 
@@ -180,18 +182,18 @@ KEYMAPS(
 
 #if defined (PRIMARY_KEYMAP_QWERTY)
   [PRIMARY] = KEYMAP_STACKED
-  (___,          OSL(NUMPAD), OSL(FUNCTION), OSM(LeftShift), Key_4, Key_5, Key_LEDEffectNext,
+  (M(MACRO_TOGGLE_ONESHOT),          OSL(NUMPAD), OSL(FUNCTION), OSM(LeftShift), Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
    OSM(LeftControl), Key_Backspace, Key_LeftGui, OSM(LeftShift),
    OSL(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
+   Key_MetaSticky,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
    Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                   Key_H, Key_J, Key_K,  Key_L,  Key_Semicolon, Key_Quote,
    Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+   Key_RightShift, Key_Meh, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
 #elif defined (PRIMARY_KEYMAP_DVORAK)
@@ -276,7 +278,7 @@ KEYMAPS(
    ___, Key_Delete, ___, ___,
    ___,
 
-   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
+   Consumer_ScanPreviousTrack, M(MACRO_ANY),                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
                                Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
    Key_PcApplication,          Consumer_Mute,          Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
@@ -319,6 +321,10 @@ static void anyKeyMacro(uint8_t keyState) {
     Kaleidoscope.hid().keyboard().pressKey(lastKey, toggledOn);
 }
 
+void macroToggleOneShot(uint8_t key_state) {
+  if (keyToggledOn(key_state))
+    OneShot.toggleAutoOneShot();
+}
 
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
@@ -341,6 +347,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_ANY:
     anyKeyMacro(keyState);
+    break;
+
+  case MACRO_TOGGLE_ONESHOT:
+    macroToggleOneShot(keyState);
     break;
   }
   return MACRO_NONE;
@@ -504,7 +514,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // NumPad,
 
   // The macros plugin adds support for macros
-  // Macros,
+  Macros,
 
   OneShot,
   EscapeOneShot,
@@ -550,7 +560,9 @@ void setup() {
   OneShot.setTimeout(3000);
   OneShot.setHoldTimeout(1000);
   OneShot.setDoubleTapTimeout(500);
-  OneShot.enableAutoModifiers();
+  //OneShot.enableAutoModifiers();
+
+  EscapeOneShot.setEscapeKey(Key_A);
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
