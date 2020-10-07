@@ -171,7 +171,7 @@ enum { PRIMARY, NUMPAD, FUNCTION }; // layers
 // #define PRIMARY_KEYMAP_DVORAK
 // #define PRIMARY_KEYMAP_CUSTOM
 
-
+#define Key_MetaSticky Key_NoKey
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -322,8 +322,8 @@ static void anyKeyMacro(uint8_t keyState) {
 }
 
 void macroToggleOneShot(uint8_t key_state) {
-  if (keyToggledOn(key_state))
-    OneShot.toggleAutoOneShot();
+  // if (keyToggledOn(key_state))
+  //   OneShot.toggleAutoOneShot();
 }
 
 /** macroAction dispatches keymap events that are tied to a macro
@@ -556,13 +556,14 @@ void setup() {
   )
   Qukeys.setHoldTimeout(1000);
   Qukeys.setOverlapThreshold(50);
+  Qukeys.setMinimumHoldTime(0);
 
-  OneShot.setTimeout(3000);
-  OneShot.setHoldTimeout(1000);
-  OneShot.setDoubleTapTimeout(500);
-  //OneShot.enableAutoModifiers();
+  // OneShot.setTimeout(3000);
+  // OneShot.setHoldTimeout(1000);
+  // OneShot.setDoubleTapTimeout(500);
+  // OneShot.enableAutoModifiers();
 
-  EscapeOneShot.setEscapeKey(Key_A);
+  // EscapeOneShot.setEscapeKey(Key_A);
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
