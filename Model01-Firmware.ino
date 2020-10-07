@@ -75,6 +75,9 @@
 // Support for USB quirks, like changing the key state report protocol
 #include "Kaleidoscope-USB-Quirks.h"
 
+// Qukeys
+#include "Kaleidoscope-Qukeys.h"
+
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -428,6 +431,8 @@ USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
 // The order can be important. For example, LED effects are
 // added in the order they're listed here.
 KALEIDOSCOPE_INIT_PLUGINS(
+  // Qukeys
+  Qukeys,
   // The EEPROMSettings & EEPROMKeymap plugins make it possible to have an
   // editable keymap in EEPROM.
   EEPROMSettings,
@@ -525,6 +530,32 @@ KALEIDOSCOPE_INIT_PLUGINS(
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
+
+  // Define Qukeys
+  QUKEYS(
+      // left-side modifiers
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 1), Key_LeftGui),      // A
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 2), Key_LeftAlt),      // S
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 3), Key_LeftControl),  // D
+      kaleidoscope::plugin::Qukey(0, KeyAddr(2, 4), Key_LeftShift),    // F
+      // left-side layer shifts
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 3), ShiftToLayer(NUMPAD)),    // C
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 4), ShiftToLayer(FUNCTION)),  // V
+      // prog key
+      kaleidoscope::plugin::Qukey(1, KeyAddr(0, 0), XXX),  // prog (FUNCTION layer)
+      // left-side long-press caps
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 1), LSHIFT(Key_Q)),  // Q
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 2), LSHIFT(Key_W)),  // W
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 3), LSHIFT(Key_E)),  // E
+      kaleidoscope::plugin::Qukey(0, KeyAddr(1, 4), LSHIFT(Key_R)),  // R
+      // SpaceCadet
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 7), Key_LeftParen),
+      kaleidoscope::plugin::Qukey(0, KeyAddr(3, 8), Key_RightParen),
+  );
+
+  // Set qukeys configuration variables for debugging
+  Qukeys.setHoldTimeout(5000);
+  Qukeys.setOverlapThreshold(50);
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
