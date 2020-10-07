@@ -556,7 +556,7 @@ void setup() {
   )
   Qukeys.setHoldTimeout(1000);
   Qukeys.setOverlapThreshold(50);
-  Qukeys.setMinimumHoldTime(0);
+  Qukeys.setMinimumHoldTime(250);
 
   // OneShot.setTimeout(3000);
   // OneShot.setHoldTimeout(1000);
