@@ -75,6 +75,8 @@
 // Support for USB quirks, like changing the key state report protocol
 #include "Kaleidoscope-USB-Quirks.h"
 
+#include "Kaleidoscope-TapDance.h"
+
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -176,7 +178,7 @@ KEYMAPS(
   [PRIMARY] = KEYMAP_STACKED
   (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
-   Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
+   Key_PageUp,   Key_A, Key_S, TD(0), TD(1), Key_G,
    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FUNCTION),
@@ -424,10 +426,21 @@ USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
   .keys = { R3C6, R0C0, R0C6 }
 });
 
+void tapDanceAction(uint8_t index, KeyAddr key_addr, uint8_t count,
+                    kaleidoscope::plugin::TapDance::ActionType action) {
+  switch (index) {
+    case 0:
+      return tapDanceActionKeys(count, action, Key_A, Key_X);
+    case 1:
+      return tapDanceActionKeys(count, action, Key_B, Key_Y);
+  }
+}
+
 // First, tell Kaleidoscope which plugins you want to use.
 // The order can be important. For example, LED effects are
 // added in the order they're listed here.
 KALEIDOSCOPE_INIT_PLUGINS(
+  TapDance,
   // The EEPROMSettings & EEPROMKeymap plugins make it possible to have an
   // editable keymap in EEPROM.
   EEPROMSettings,
@@ -525,6 +538,8 @@ KALEIDOSCOPE_INIT_PLUGINS(
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
+
+  TapDance.time_out = 1000;
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
